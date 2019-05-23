@@ -1,0 +1,100 @@
+﻿@font-face {
+    font-family: WatermelonScript;
+    src: url('Watermelon Script Demo.ttf');
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+}
+
+.bg-image {
+    background-image: url('../images/background.jpg');
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /*opacity: 0.9;*/
+    position: relative;
+    display: block;
+    top: 0;
+    left: -500px;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.content {
+    z-index: 9999;
+}
+
+.logo {
+    margin: auto;
+    margin-top: 3rem;
+    width: 80%;
+    align-content: center;
+    text-align: center;
+}
+
+    .logo img {
+        height: 80px;
+    }
+
+.title {
+    color: #ffffff;
+    font-size: 7rem;
+    font-family: WatermelonScript;
+    margin: auto;
+    margin-top: 3rem;
+    width: 80%;
+    text-align: center;
+}
+
+.prize {
+    color: #ffffff;
+    font-size: 4rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin: auto;
+    margin-top: 3rem;
+    width: 60%;
+    text-align: center;
+    border: 1px solid #ffffff7d;
+    padding: 25px;
+    background-color: #ffffff30;
+}
+
+.prize-value {
+    font-size: 2rem;
+}
+
+.prize-small {
+    font-size: 3rem;
+}
+
+.digits {
+    margin: auto;
+    margin-top: 6rem;
+    width: 80%;
+    text-align: center;
+}
+
+.digit {
+    display: inline-block;
+    box-shadow: 0 0 20px 1px rgba(var(--palette-neutral-10,150, 150, 150),1);
+    background-color: rgba(202, 54, 179, 0.8);
+    border: 2px solid rgba(150, 150, 150, 0.7);
+    border-radius: 10px;
+    color: #d4d4d4;
+    font-size: 15rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+    width: 150px;
+    height: 300px;
+    margin: 0 10px;
+    vertical-align: central;
+}

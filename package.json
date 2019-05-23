@@ -1,0 +1,15 @@
+{
+  "name": "random",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "typescript": "^3.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "tsc": "tsc js/random.ts"
+  },
+  "author": "",
+  "license": "ISC"
+}
