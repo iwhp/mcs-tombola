@@ -1,56 +1,5 @@
-﻿window.onload = () => {
-    let currentIndex = 0;
-    document.getElementById('prize').setAttribute("style", "display:none;");
-    document.getElementById('digits').setAttribute("style", "display:none;");
-
-    document.getElementById('body').onclick = () => {
-        if (currentIndex >= prices.length) { return; }
-
-        document.getElementById('prize').removeAttribute("style");
-        document.getElementById('digits').removeAttribute("style");
-
-        document.getElementById('level').innerText = prices[currentIndex].level.toString();
-        document.getElementById('title').innerText = prices[currentIndex].title;
-        document.getElementById('sponsor').innerText = prices[currentIndex].sponsor;
-        document.getElementById('value').innerText = prices[currentIndex].value.toString();
-
-        document.getElementById('digit1').innerText = ' ';
-        document.getElementById('digit2').innerText = ' ';
-        document.getElementById('digit3').innerText = ' ';
-        //document.getElementById('digit4').innerText = ' ';
-
-        currentIndex++;
-    };
-
-    document.getElementById('body').onkeydown = () => {
-        let random = Math.floor(Math.random() * 500) + 101;
-        console.log(random);
-
-        // digit 1
-        let timerId1 = setInterval(() => { document.getElementById('digit1').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        setTimeout(() => { document.getElementById('digit1').innerText = random.toString().charAt(0); }, 1100);
-        setTimeout(() => { clearInterval(timerId1); }, 1000);
-        // digit 2
-        let timerId2 = setInterval(() => { document.getElementById('digit2').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        setTimeout(() => { document.getElementById('digit2').innerText = random.toString().charAt(1); }, 2100);
-        setTimeout(() => { clearInterval(timerId2); }, 2000);
-        // digit 3
-        let timerId3 = setInterval(() => { document.getElementById('digit3').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        setTimeout(() => { document.getElementById('digit3').innerText = random.toString().charAt(2); }, 3100);
-        setTimeout(() => { clearInterval(timerId3); }, 3000);
-        // digit 4
-        //let timerId4 = setInterval(() => { document.getElementById('digit4').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        //setTimeout(() => { document.getElementById('digit4').innerText = random.toString().charAt(3); }, 4100);
-        //setTimeout(() => { clearInterval(timerId4); }, 4000);
-    };
-};
-
-interface IPrice {
-    level: number;
-    title: string;
-    sponsor: string;
-    value: number;
-}
+﻿let currentIndex = 0;
+let numbersDrawn: number[] = [];
 
 let prices: IPrice[] = [
     { level: 10, title: 'Konsumationsgutschein', sponsor: 'Long John Bar, Schaan', value: 200.00 },
@@ -64,3 +13,90 @@ let prices: IPrice[] = [
     { level: 2, title: 'Fitness Super Premium Abo', sponsor: 'Fitnesshaus, Schaan & Ruggell', value: 1690.00 },
     { level: 1, title: 'Cresta E-Bike Enviolo Gates', sponsor: 'Sele Radsport, Eschen', value: 4098.00 },
 ];
+
+window.onload = () => {
+    document.getElementById('prize').setAttribute("style", "display:none;");
+    document.getElementById('digits').setAttribute("style", "display:none;");
+
+    // CLICK: Goto Next Price
+    document.getElementById('body').onclick = () => {
+        showPrice();
+    };
+
+    // KEY: Goto Next Price | GoTo Previous Price | Enter Pressed (Calculate Random)
+    document.getElementById('body').onkeydown = (event: KeyboardEvent) => {
+        // Goto Next Price
+        if (event.key === 'ArrowRight') {
+            showPrice();
+            return;
+        }
+
+        // GoTo Previous Price
+        if (event.key === 'ArrowLeft') {
+            if (currentIndex > 1) {
+                currentIndex--; // show same again
+                currentIndex--; // show previous
+                showPrice();
+                return;
+            }
+        }
+
+        // Enter Pressed (Calculate Random)
+        if (event.key === 'Enter') {
+
+            let isCalculateNewRandom = true;
+            let random = 0;
+            while (isCalculateNewRandom) {
+                isCalculateNewRandom = false;
+                random = calculateRandom();
+                if (numbersDrawn.length === 0) { isCalculateNewRandom = false; };
+                numbersDrawn.forEach(value => { if (value === random) { console.log(random.toString() + '***** SAME'); isCalculateNewRandom = true; return; } });
+            }
+            numbersDrawn.push(random);
+            console.log(random);
+
+            // digit 1
+            let timerId1 = setInterval(() => { document.getElementById('digit1').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
+            setTimeout(() => { document.getElementById('digit1').innerText = random.toString().charAt(0); }, 2100);
+            setTimeout(() => { clearInterval(timerId1); }, 2000);
+            // digit 2
+            let timerId2 = setInterval(() => { document.getElementById('digit2').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
+            setTimeout(() => { document.getElementById('digit2').innerText = random.toString().charAt(1); }, 4100);
+            setTimeout(() => { clearInterval(timerId2); }, 4000);
+            // digit 3
+            let timerId3 = setInterval(() => { document.getElementById('digit3').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
+            setTimeout(() => { document.getElementById('digit3').innerText = random.toString().charAt(2); }, 6100);
+            setTimeout(() => { clearInterval(timerId3); }, 6000);
+
+            return;
+        }
+    };
+};
+
+function showPrice() {
+    if (currentIndex >= prices.length) { return; }
+
+    document.getElementById('prize').removeAttribute("style");
+    document.getElementById('digits').removeAttribute("style");
+
+    document.getElementById('level').innerText = prices[currentIndex].level.toString();
+    document.getElementById('title').innerText = prices[currentIndex].title;
+    document.getElementById('sponsor').innerText = prices[currentIndex].sponsor;
+    document.getElementById('value').innerText = prices[currentIndex].value.toString();
+
+    document.getElementById('digit1').innerText = ' ';
+    document.getElementById('digit2').innerText = ' ';
+    document.getElementById('digit3').innerText = ' ';
+
+    currentIndex++;
+}
+
+function calculateRandom(): number {
+    return Math.floor(Math.random() * 500) + 101;
+}
+interface IPrice {
+    level: number;
+    title: string;
+    sponsor: string;
+    value: number;
+}

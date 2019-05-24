@@ -1,44 +1,5 @@
-window.onload = function () {
-    var currentIndex = 0;
-    document.getElementById('prize').setAttribute("style", "display:none;");
-    document.getElementById('digits').setAttribute("style", "display:none;");
-    document.getElementById('body').onclick = function () {
-        if (currentIndex >= prices.length) {
-            return;
-        }
-        document.getElementById('prize').removeAttribute("style");
-        document.getElementById('digits').removeAttribute("style");
-        document.getElementById('level').innerText = prices[currentIndex].level.toString();
-        document.getElementById('title').innerText = prices[currentIndex].title;
-        document.getElementById('sponsor').innerText = prices[currentIndex].sponsor;
-        document.getElementById('value').innerText = prices[currentIndex].value.toString();
-        document.getElementById('digit1').innerText = ' ';
-        document.getElementById('digit2').innerText = ' ';
-        document.getElementById('digit3').innerText = ' ';
-        //document.getElementById('digit4').innerText = ' ';
-        currentIndex++;
-    };
-    document.getElementById('body').onkeydown = function () {
-        var random = Math.floor(Math.random() * 500) + 101;
-        console.log(random);
-        // digit 1
-        var timerId1 = setInterval(function () { document.getElementById('digit1').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        setTimeout(function () { document.getElementById('digit1').innerText = random.toString().charAt(0); }, 1100);
-        setTimeout(function () { clearInterval(timerId1); }, 1000);
-        // digit 2
-        var timerId2 = setInterval(function () { document.getElementById('digit2').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        setTimeout(function () { document.getElementById('digit2').innerText = random.toString().charAt(1); }, 2100);
-        setTimeout(function () { clearInterval(timerId2); }, 2000);
-        // digit 3
-        var timerId3 = setInterval(function () { document.getElementById('digit3').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        setTimeout(function () { document.getElementById('digit3').innerText = random.toString().charAt(2); }, 3100);
-        setTimeout(function () { clearInterval(timerId3); }, 3000);
-        // digit 4
-        //let timerId4 = setInterval(() => { document.getElementById('digit4').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
-        //setTimeout(() => { document.getElementById('digit4').innerText = random.toString().charAt(3); }, 4100);
-        //setTimeout(() => { clearInterval(timerId4); }, 4000);
-    };
-};
+var currentIndex = 0;
+var numbersDrawn = [];
 var prices = [
     { level: 10, title: 'Konsumationsgutschein', sponsor: 'Long John Bar, Schaan', value: 200.00 },
     { level: 9, title: 'Einkaufsgutschein', sponsor: 'Hermann Quaderer AG, Schaan', value: 250.00 },
@@ -51,4 +12,80 @@ var prices = [
     { level: 2, title: 'Fitness Super Premium Abo', sponsor: 'Fitnesshaus, Schaan & Ruggell', value: 1690.00 },
     { level: 1, title: 'Cresta E-Bike Enviolo Gates', sponsor: 'Sele Radsport, Eschen', value: 4098.00 },
 ];
+window.onload = function () {
+    document.getElementById('prize').setAttribute("style", "display:none;");
+    document.getElementById('digits').setAttribute("style", "display:none;");
+    // CLICK: Goto Next Price
+    document.getElementById('body').onclick = function () {
+        showPrice();
+    };
+    // KEY: Goto Next Price | GoTo Previous Price | Enter Pressed (Calculate Random)
+    document.getElementById('body').onkeydown = function (event) {
+        // Goto Next Price
+        if (event.key === 'ArrowRight') {
+            showPrice();
+            return;
+        }
+        // GoTo Previous Price
+        if (event.key === 'ArrowLeft') {
+            if (currentIndex > 1) {
+                currentIndex--; // show same again
+                currentIndex--; // show previous
+                showPrice();
+                return;
+            }
+        }
+        // Enter Pressed (Calculate Random)
+        if (event.key === 'Enter') {
+            var isCalculateNewRandom_1 = true;
+            var random_1 = 0;
+            while (isCalculateNewRandom_1) {
+                isCalculateNewRandom_1 = false;
+                random_1 = calculateRandom();
+                if (numbersDrawn.length === 0) {
+                    isCalculateNewRandom_1 = false;
+                }
+                ;
+                numbersDrawn.forEach(function (value) { if (value === random_1) {
+                    console.log(random_1.toString() + '***** SAME');
+                    isCalculateNewRandom_1 = true;
+                    return;
+                } });
+            }
+            numbersDrawn.push(random_1);
+            console.log(random_1);
+            // digit 1
+            var timerId1_1 = setInterval(function () { document.getElementById('digit1').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
+            setTimeout(function () { document.getElementById('digit1').innerText = random_1.toString().charAt(0); }, 2100);
+            setTimeout(function () { clearInterval(timerId1_1); }, 2000);
+            // digit 2
+            var timerId2_1 = setInterval(function () { document.getElementById('digit2').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
+            setTimeout(function () { document.getElementById('digit2').innerText = random_1.toString().charAt(1); }, 4100);
+            setTimeout(function () { clearInterval(timerId2_1); }, 4000);
+            // digit 3
+            var timerId3_1 = setInterval(function () { document.getElementById('digit3').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
+            setTimeout(function () { document.getElementById('digit3').innerText = random_1.toString().charAt(2); }, 6100);
+            setTimeout(function () { clearInterval(timerId3_1); }, 6000);
+            return;
+        }
+    };
+};
+function showPrice() {
+    if (currentIndex >= prices.length) {
+        return;
+    }
+    document.getElementById('prize').removeAttribute("style");
+    document.getElementById('digits').removeAttribute("style");
+    document.getElementById('level').innerText = prices[currentIndex].level.toString();
+    document.getElementById('title').innerText = prices[currentIndex].title;
+    document.getElementById('sponsor').innerText = prices[currentIndex].sponsor;
+    document.getElementById('value').innerText = prices[currentIndex].value.toString();
+    document.getElementById('digit1').innerText = ' ';
+    document.getElementById('digit2').innerText = ' ';
+    document.getElementById('digit3').innerText = ' ';
+    currentIndex++;
+}
+function calculateRandom() {
+    return Math.floor(Math.random() * 500) + 101;
+}
 //# sourceMappingURL=random.js.map
