@@ -1,4 +1,5 @@
-﻿let currentIndex = 0;
+﻿let nextIndex = 0;
+let shownIndex = -1;
 let numbersDrawn: number[] = [];
 
 let prices: IPrice[] = [
@@ -18,12 +19,7 @@ window.onload = () => {
     document.getElementById('prize').setAttribute("style", "display:none;");
     document.getElementById('digits').setAttribute("style", "display:none;");
 
-    // CLICK: Goto Next Price
-    document.getElementById('body').onclick = () => {
-        showPrice();
-    };
-
-    // KEY: Goto Next Price | GoTo Previous Price | Enter Pressed (Calculate Random)
+    // KEY: Goto Next Price | GoTo Previous Price | Enter Pressed (Calculate Random) | Clear Random
     document.getElementById('body').onkeydown = (event: KeyboardEvent) => {
         // Goto Next Price
         if (event.key === 'ArrowRight') {
@@ -33,16 +29,16 @@ window.onload = () => {
 
         // GoTo Previous Price
         if (event.key === 'ArrowLeft') {
-            if (currentIndex > 1) {
-                currentIndex--; // show same again
-                currentIndex--; // show previous
+            if (nextIndex > 1) {
+                nextIndex--; // show same again
+                nextIndex--; // show previous
                 showPrice();
                 return;
             }
         }
 
         // Enter Pressed (Calculate Random)
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && shownIndex >= 0) {
 
             let isCalculateNewRandom = true;
             let random = 0;
@@ -53,6 +49,7 @@ window.onload = () => {
                 numbersDrawn.forEach(value => { if (value === random) { console.log(random.toString() + '***** SAME'); isCalculateNewRandom = true; return; } });
             }
             numbersDrawn.push(random);
+            prices[shownIndex].winningNumber = random;
             console.log(random);
 
             // digit 1
@@ -70,33 +67,50 @@ window.onload = () => {
 
             return;
         }
+
+        // Clear Random
+        if (event.key === 'Delete') {
+            prices[shownIndex].winningNumber = null;
+            document.getElementById('digit1').innerText = ' ';
+            document.getElementById('digit2').innerText = ' ';
+            document.getElementById('digit3').innerText = ' ';
+        }
     };
 };
 
 function showPrice() {
-    if (currentIndex >= prices.length) { return; }
+    if (nextIndex >= prices.length) { return; }
 
+    shownIndex = nextIndex;
     document.getElementById('prize').removeAttribute("style");
     document.getElementById('digits').removeAttribute("style");
 
-    document.getElementById('level').innerText = prices[currentIndex].level.toString();
-    document.getElementById('title').innerText = prices[currentIndex].title;
-    document.getElementById('sponsor').innerText = prices[currentIndex].sponsor;
-    document.getElementById('value').innerText = prices[currentIndex].value.toString();
+    document.getElementById('level').innerText = prices[shownIndex].level.toString();
+    document.getElementById('title').innerText = prices[shownIndex].title;
+    document.getElementById('sponsor').innerText = prices[shownIndex].sponsor;
+    document.getElementById('value').innerText = prices[shownIndex].value.toString();
 
     document.getElementById('digit1').innerText = ' ';
     document.getElementById('digit2').innerText = ' ';
     document.getElementById('digit3').innerText = ' ';
 
-    currentIndex++;
+    if (prices[shownIndex].winningNumber) {
+        document.getElementById('digit1').innerText = prices[shownIndex].winningNumber.toString().charAt(0);
+        document.getElementById('digit2').innerText = prices[shownIndex].winningNumber.toString().charAt(1);
+        document.getElementById('digit3').innerText = prices[shownIndex].winningNumber.toString().charAt(2);
+    }
+
+    nextIndex++;
 }
 
 function calculateRandom(): number {
     return Math.floor(Math.random() * 500) + 101;
 }
+
 interface IPrice {
     level: number;
     title: string;
     sponsor: string;
     value: number;
+    winningNumber?: number;
 }

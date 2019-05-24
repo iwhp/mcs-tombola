@@ -1,4 +1,5 @@
-var currentIndex = 0;
+var nextIndex = 0;
+var shownIndex = -1;
 var numbersDrawn = [];
 var prices = [
     { level: 10, title: 'Konsumationsgutschein', sponsor: 'Long John Bar, Schaan', value: 200.00 },
@@ -15,11 +16,7 @@ var prices = [
 window.onload = function () {
     document.getElementById('prize').setAttribute("style", "display:none;");
     document.getElementById('digits').setAttribute("style", "display:none;");
-    // CLICK: Goto Next Price
-    document.getElementById('body').onclick = function () {
-        showPrice();
-    };
-    // KEY: Goto Next Price | GoTo Previous Price | Enter Pressed (Calculate Random)
+    // KEY: Goto Next Price | GoTo Previous Price | Enter Pressed (Calculate Random) | Clear Random
     document.getElementById('body').onkeydown = function (event) {
         // Goto Next Price
         if (event.key === 'ArrowRight') {
@@ -28,15 +25,15 @@ window.onload = function () {
         }
         // GoTo Previous Price
         if (event.key === 'ArrowLeft') {
-            if (currentIndex > 1) {
-                currentIndex--; // show same again
-                currentIndex--; // show previous
+            if (nextIndex > 1) {
+                nextIndex--; // show same again
+                nextIndex--; // show previous
                 showPrice();
                 return;
             }
         }
         // Enter Pressed (Calculate Random)
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && shownIndex >= 0) {
             var isCalculateNewRandom_1 = true;
             var random_1 = 0;
             while (isCalculateNewRandom_1) {
@@ -53,6 +50,7 @@ window.onload = function () {
                 } });
             }
             numbersDrawn.push(random_1);
+            prices[shownIndex].winningNumber = random_1;
             console.log(random_1);
             // digit 1
             var timerId1_1 = setInterval(function () { document.getElementById('digit1').innerText = (Math.floor(Math.random() * 9) + 0).toString(); }, 50);
@@ -68,22 +66,35 @@ window.onload = function () {
             setTimeout(function () { clearInterval(timerId3_1); }, 6000);
             return;
         }
+        // Clear Random
+        if (event.key === 'Delete') {
+            prices[shownIndex].winningNumber = null;
+            document.getElementById('digit1').innerText = ' ';
+            document.getElementById('digit2').innerText = ' ';
+            document.getElementById('digit3').innerText = ' ';
+        }
     };
 };
 function showPrice() {
-    if (currentIndex >= prices.length) {
+    if (nextIndex >= prices.length) {
         return;
     }
+    shownIndex = nextIndex;
     document.getElementById('prize').removeAttribute("style");
     document.getElementById('digits').removeAttribute("style");
-    document.getElementById('level').innerText = prices[currentIndex].level.toString();
-    document.getElementById('title').innerText = prices[currentIndex].title;
-    document.getElementById('sponsor').innerText = prices[currentIndex].sponsor;
-    document.getElementById('value').innerText = prices[currentIndex].value.toString();
+    document.getElementById('level').innerText = prices[shownIndex].level.toString();
+    document.getElementById('title').innerText = prices[shownIndex].title;
+    document.getElementById('sponsor').innerText = prices[shownIndex].sponsor;
+    document.getElementById('value').innerText = prices[shownIndex].value.toString();
     document.getElementById('digit1').innerText = ' ';
     document.getElementById('digit2').innerText = ' ';
     document.getElementById('digit3').innerText = ' ';
-    currentIndex++;
+    if (prices[shownIndex].winningNumber) {
+        document.getElementById('digit1').innerText = prices[shownIndex].winningNumber.toString().charAt(0);
+        document.getElementById('digit2').innerText = prices[shownIndex].winningNumber.toString().charAt(1);
+        document.getElementById('digit3').innerText = prices[shownIndex].winningNumber.toString().charAt(2);
+    }
+    nextIndex++;
 }
 function calculateRandom() {
     return Math.floor(Math.random() * 500) + 101;
